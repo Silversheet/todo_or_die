@@ -9,7 +9,7 @@ module TodoOrDie
         TODO: "#{message}" came due on #{due_at.strftime("%Y-%m-%d")}. Do it!
       MSG
 
-      if defined?(Rails) && Rails.env.production?
+      if defined?(Rails)
         Rails.logger.warn(error_message)
       else
         raise TodoOrDie::OverdueTodo, error_message, TodoOrDie.__clean_backtrace(caller)

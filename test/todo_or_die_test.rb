@@ -53,13 +53,15 @@ class TodoOrDieTest < UnitTest
   end
 
   def test_when_rails_is_a_thing_and_not_production
-    make_it_be_rails(false)
+    faux_logger = make_it_be_rails(false)
 
     Timecop.travel(Date.civil(1980, 1, 20))
 
-    assert_raises(TodoOrDie::OverdueTodo) {
-      TodoOrDie("I am in Rails", by: Date.civil(1980, 1, 15))
-    }
+    TodoOrDie("I am in Rails", by: Date.civil(1980, 1, 20))
+
+    assert_equal <<~MSG, faux_logger.warning
+      TODO: "I am in Rails" came due on 1980-01-20. Do it!
+    MSG
   end
 
   def test_when_rails_is_a_thing_and_is_production
